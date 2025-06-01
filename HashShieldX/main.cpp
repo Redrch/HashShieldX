@@ -60,5 +60,43 @@ int main(int argc, char* argv[])
 		return app.exit(e);
 	}
 
+	// 处理命令
+	// Encrypt
+	if (encryptCommand->parsed())
+	{
+		if (isDebug)
+		{
+			cout << "已启用Debug模式" << endl;
+		}
+		cout << "被加密文件(Input File): " << encryptInputFile << endl;
+		cout << "输出文件(Output File): " << encryptOutputFile << endl;
+		cout << "密钥文件(Key File): " << encryptKeyFile << endl;
+		if (isForceOnEncrypt)
+		{
+			cout << "强制覆盖输出文件" << endl;
+		}
+		cout << "准备开始加密" << endl;
+
+		// TODO: Encrypt
+	}
+	// Decrypt
+	else if (decryptCommand->parsed())
+	{
+		if (isDebug)
+		{
+			cout << "已启用Debug模式" << endl;
+		}
+		cout << "被解密文件(Input File): " << decryptInputFile << endl;
+		cout << "输出文件(Output File): " << decryptOutputFile << endl;
+		cout << "密钥文件(Key File): " << decryptKeyFile << endl;
+		if (isForceOnDecrypt)
+		{
+			cout << "强制覆盖输出文件" << endl;
+		}
+		cout << "准备开始解密" << endl;
+
+		// TODO: Decrypt
+	}
+
 	return 0;
 }
