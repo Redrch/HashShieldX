@@ -8,6 +8,7 @@ int main(int argc, char* argv[])
 		"This is a small tool that can help you encrypt and decrypt files (or folders) and calculate the hash values of multiple files (or folders)"};
 
 	app.set_version_flag("--version", VERSION, "œ‘ æ∞Ê±æ∫≈");
+	
 
 	CLI11_PARSE(app, argc, argv);
 	return 0;

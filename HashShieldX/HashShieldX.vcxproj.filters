@@ -13,10 +13,30 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="源文件\Encrypt">
+      <UniqueIdentifier>{6a538aa3-3e45-4b5a-a93b-ab73477ac232}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Encrypt">
+      <UniqueIdentifier>{20a69c7f-5002-4fe6-8740-66262c364388}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="encrypt.cpp">
+      <Filter>源文件\Encrypt</Filter>
+    </ClCompile>
+    <ClCompile Include="decrypt.cpp">
+      <Filter>源文件\Encrypt</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="encrypt.h">
+      <Filter>头文件\Encrypt</Filter>
+    </ClInclude>
+    <ClInclude Include="decrypt.h">
+      <Filter>头文件\Encrypt</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
