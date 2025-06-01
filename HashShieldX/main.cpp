@@ -12,21 +12,49 @@ int main(int argc, char* argv[])
 	// Encrypt Command
 	auto* encryptCommand = app.add_subcommand("encrypt", "加密文件");
 	// Required
-	// Input file name
-	string inputFile;
-	encryptCommand->add_option("-i, --input", inputFile, "要加密的文件")->required();
-	// Output file name
-	string outputFile;
-	encryptCommand->add_option("-o, --output", outputFile, "输出文件")->required();
-	// Key file
-	string keyFile;
-	encryptCommand->add_option("-k, --key", keyFile, "密钥文件")->required();
+	// Encrypt input file
+	string encryptInputFile;
+	encryptCommand->add_option("-i, --input", encryptInputFile, "要加密的文件")->required();
+	// Encrypt output file
+	string encryptOutputFile;
+	encryptCommand->add_option("-o, --output", encryptOutputFile, "输出文件")->required();
+	// Encrypt key file
+	string encryptKeyFile;
+	encryptCommand->add_option("-k, --key", encryptKeyFile, "密钥文件")->required();
 	
 	// Optional
 	// Is force overwrite of the output file
-	bool isForce = false;
-	encryptCommand->add_flag("-f, --force", isForce, "是否强制覆盖输出文件");
+	bool isForceOnEncrypt = false;
+	encryptCommand->add_flag("-f, --force", isForceOnEncrypt, "是否强制覆盖输出文件");
 
-	CLI11_PARSE(app, argc, argv);
+	// Decrypt Command
+	auto* decryptCommand = app.add_subcommand("decrypt", "解密文件");
+	// Required
+	// Decrypt input file
+	string decryptInputFile;
+	decryptCommand->add_option("-i, --input", decryptInputFile, "要加密的文件")->required();
+	// Decrypt output file
+	string decryptOutputFile;
+	decryptCommand->add_option("-o, --output", decryptOutputFile, "输出文件")->required();
+	// Decrypt Key file
+	string decryptKeyFile;
+	decryptCommand->add_option("-k, --key", decryptKeyFile, "密钥文件")->required();
+
+	// Optional
+	// Is force overwrite of the output file
+	bool isForceOnDecrypt = false;
+	encryptCommand->add_flag("-f, --force", isForceOnDecrypt, "是否强制覆盖输出文件");
+
+	// 只需要一个子命令
+	app.require_subcommand(1);
+
+	// 解析命令行参数
+	try {
+		app.parse(argc, argv);
+	}
+	catch (const CLI::ParseError& e) {
+		return app.exit(e);
+	}
+
 	return 0;
 }
