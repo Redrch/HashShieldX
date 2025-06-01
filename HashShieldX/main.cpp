@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
 	app.set_version_flag("--version", VERSION, "显示版本号");
 
 	// Is open debug mode
-	bool isDebug;
+	bool isDebug = false;
 	app.add_flag("-d, --debug", isDebug, "启用调试模式");
 
 	// Encrypt Command
@@ -28,8 +28,8 @@ int main(int argc, char* argv[])
 	
 	// Optional
 	// Is force overwrite of the output file
-	bool isForceOnEncrypt = false;
-	encryptCommand->add_flag("-f, --force", isForceOnEncrypt, "是否强制覆盖输出文件");
+	bool isForce = false;
+	encryptCommand->add_flag("-f, --force", isForce, "是否强制覆盖输出文件");
 
 	// Decrypt Command
 	auto* decryptCommand = app.add_subcommand("decrypt", "解密文件");
@@ -43,11 +43,6 @@ int main(int argc, char* argv[])
 	// Decrypt Key file
 	string decryptKeyFile;
 	decryptCommand->add_option("-k, --key", decryptKeyFile, "密钥文件")->required();
-
-	// Optional
-	// Is force overwrite of the output file
-	bool isForceOnDecrypt = false;
-	encryptCommand->add_flag("-f, --force", isForceOnDecrypt, "是否强制覆盖输出文件");
 
 	// 只需要一个子命令
 	app.require_subcommand(1);
@@ -71,7 +66,7 @@ int main(int argc, char* argv[])
 		cout << "被加密文件(Input File): " << encryptInputFile << endl;
 		cout << "输出文件(Output File): " << encryptOutputFile << endl;
 		cout << "密钥文件(Key File): " << encryptKeyFile << endl;
-		if (isForceOnEncrypt)
+		if (isForce)
 		{
 			cout << "强制覆盖输出文件" << endl;
 		}
@@ -89,7 +84,7 @@ int main(int argc, char* argv[])
 		cout << "被解密文件(Input File): " << decryptInputFile << endl;
 		cout << "输出文件(Output File): " << decryptOutputFile << endl;
 		cout << "密钥文件(Key File): " << decryptKeyFile << endl;
-		if (isForceOnDecrypt)
+		if (isForce)
 		{
 			cout << "强制覆盖输出文件" << endl;
 		}
