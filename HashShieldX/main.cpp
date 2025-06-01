@@ -9,6 +9,10 @@ int main(int argc, char* argv[])
 
 	app.set_version_flag("--version", VERSION, "显示版本号");
 
+	// Is open debug mode
+	bool isDebug;
+	app.add_flag("-d, --debug", isDebug, "启用调试模式");
+
 	// Encrypt Command
 	auto* encryptCommand = app.add_subcommand("encrypt", "加密文件");
 	// Required
