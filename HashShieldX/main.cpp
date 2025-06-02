@@ -1,6 +1,10 @@
 #include <iostream>
 #include <string>
 #include "CLI11.hpp"
+
+#include "encrypt.h"
+#include "decrypt.h"
+
 using namespace std;
 
 int main(int argc, char* argv[])
@@ -72,7 +76,67 @@ int main(int argc, char* argv[])
 		}
 		cout << "准备开始加密" << endl;
 
-		// TODO: Encrypt
+		// 初始化OpenSSL
+		OpenSSL_add_all_algorithms();
+		ERR_load_crypto_strings();
+
+		// 实例化Encrypt
+		Encrypt* encrypt = new Encrypt;
+		try
+		{
+			// 读取文件
+			vector<unsigned char> content = readFile(encryptInputFile);
+			// 加载RSA公钥
+			auto public_key = loadPublicKey(encryptKeyFile);
+
+			// 生成随机AES密钥(256bits=32Bytes)
+			std::vector<unsigned char> aesKey(32);
+			if (RAND_bytes(aesKey.data(), aesKey.size()) != 1) {
+				handleOpenSSLErrors();
+			}
+
+			// 生成随机IV (AES块大小 = 16Bytes)
+			std::vector<unsigned char> iv(AES_BLOCK_SIZE);
+			if (RAND_bytes(iv.data(), iv.size()) != 1) {
+				handleOpenSSLErrors();
+			}
+
+			// 使用RSA公钥加密AES密钥
+			std::vector<unsigned char> encrypted_key = encrypt->encryptRSA(public_key.get(), aesKey);
+
+			// 使用AES-256-CBC加密文件内容
+			std::vector<unsigned char> ciphertext = encrypt->encryptAES(content, aesKey, iv);
+
+			// 构建输出文件
+			// 文件格式: [IV长度(1字节)][IV][加密AES密钥长度(2字节)][加密AES密钥][加密内容]
+			std::vector<unsigned char> output;
+
+			// 添加IV长度 (1字节)
+			output.push_back(static_cast<unsigned char>(iv.size()));
+
+			// 添加IV
+			output.insert(output.end(), iv.begin(), iv.end());
+
+			// 添加加密后AES密钥长度 (2字节)
+			auto key_size_bytes = encrypt->intToBytes(encrypted_key.size(), 2);
+			output.insert(output.end(), key_size_bytes.begin(), key_size_bytes.end());
+
+			// 添加加密后的AES密钥
+			output.insert(output.end(), encrypted_key.begin(), encrypted_key.end());
+
+			// 添加加密后的文件内容
+			output.insert(output.end(), ciphertext.begin(), ciphertext.end());
+
+			// 写入输出文件
+			writeFile(encryptOutputFile, output);
+
+			std::cout << "File encrypted successfully: " << encryptOutputFile << std::endl;
+		}
+		catch (const std::exception& e)
+		{
+			cerr << "Error: " << e.what() << endl;
+			return 1;
+		}
 	}
 	// Decrypt
 	else if (decryptCommand->parsed())
