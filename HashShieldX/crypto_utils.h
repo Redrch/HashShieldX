@@ -1,6 +1,5 @@
 #pragma once
 
-#define OPENSSL_STATIC
 #include <openssl/rsa.h>
 #include <openssl/pem.h>
 #include <openssl/aes.h>
