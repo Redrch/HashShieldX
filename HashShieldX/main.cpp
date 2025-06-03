@@ -214,7 +214,7 @@ int main(int argc, char* argv[])
 			// 保存解密后的内容到文件
 			writeFile(decryptOutputFile, decryptedContent);
 
-			std::cout << "文件解密成功： " << encryptOutputFile << std::endl;
+			std::cout << "文件解密成功： " << decryptInputFile << std::endl;
 		}
 		catch (const std::exception& e)
 		{

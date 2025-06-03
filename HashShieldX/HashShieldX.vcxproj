@@ -165,12 +165,14 @@
   <ItemGroup>
     <ClCompile Include="decrypt.cpp" />
     <ClCompile Include="encrypt.cpp" />
+    <ClCompile Include="gen_rsa_keys.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="crypto_utils.h" />
     <ClInclude Include="decrypt.h" />
     <ClInclude Include="encrypt.h" />
+    <ClInclude Include="gen_rsa_keys.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
