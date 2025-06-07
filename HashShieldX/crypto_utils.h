@@ -20,6 +20,8 @@ struct OpenSSLDeleter {
     void operator()(EVP_PKEY* pkey) { EVP_PKEY_free(pkey); }
     void operator()(BIO* bio) { BIO_free_all(bio); }
     void operator()(EVP_PKEY_CTX* ctx) { EVP_PKEY_CTX_free(ctx); }
+    // 添加 EVP_MD_CTX 的处理
+    void operator()(EVP_MD_CTX* ctx) { EVP_MD_CTX_free(ctx); }
 };
 
 // 错误处理辅助函数

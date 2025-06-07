@@ -7,6 +7,7 @@
 #include "encrypt.h"
 #include "decrypt.h"
 #include "gen_rsa_keys.h"
+#include "get_hash.h"
 
 using namespace std;
 
@@ -29,7 +30,7 @@ vector<string> split(const string& str, char delimiter) {
 
 int main(int argc, char* argv[])
 {
-	CLI::App app{"这是一个小工具，可以帮你加解密文件（夹）和计算多个文件（夹）的Hash值"};
+	CLI::App app{ "这是一个小工具，可以帮你加解密文件（夹）和计算多个文件（夹）的Hash值" };
 
 	app.set_version_flag("--version", VERSION, "显示版本号");
 
@@ -170,7 +171,16 @@ int main(int argc, char* argv[])
 	else if (hashCommand->parsed())
 	{
 		vector<string> inputList = split(hashInput, ',');
-		
+		vector<string> hashList = vector<string>();
+		int len = inputList.size();
+		for (int i = 0; i < len; i++)
+		{
+			string fileName = inputList[i];
+			GetHash* getHash = new GetHash;
+			string hash = getHash->calculateFileHash(fileName, GetHash::HashType::SHA1);
+			hashList.push_back(hash);
+			cout << "File: " << fileName << "  hash: " << hash << endl;
+		}
 	}
 	return 0;
 }
