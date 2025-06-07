@@ -10,6 +10,23 @@
 
 using namespace std;
 
+vector<string> split(const string& str, char delimiter) {
+	vector<string> result;
+	size_t start = 0;
+	size_t end = str.find(delimiter);
+
+	while (end != string::npos) {
+		result.push_back(str.substr(start, end - start));
+		start = end + 1;
+		end = str.find(delimiter, start);
+	}
+
+	// 添加最后一个部分
+	result.push_back(str.substr(start));
+
+	return result;
+}
+
 int main(int argc, char* argv[])
 {
 	CLI::App app{"这是一个小工具，可以帮你加解密文件（夹）和计算多个文件（夹）的Hash值"};
@@ -68,8 +85,6 @@ int main(int argc, char* argv[])
 	// Required
 	string hashInput;
 	hashCommand->add_option("-i, --input", hashInput, "输入文件");
-
-	vector<string> inputList;
 
 	// 只需要一个子命令
 	app.require_subcommand(1);
@@ -151,23 +166,11 @@ int main(int argc, char* argv[])
 		GenRSAKeys* genRsaKeys = new GenRSAKeys;
 		genRsaKeys->generateRSAKeyPair(publicKeyFile, privateKeyFile, keyLength);
 	}
-
-	return 0;
-}
-
-vector<string> split(const string& str, char delimiter) {
-	vector<string> result;
-	size_t start = 0;
-	size_t end = str.find(delimiter);
-
-	while (end != string::npos) {
-		result.push_back(str.substr(start, end - start));
-		start = end + 1;
-		end = str.find(delimiter, start);
+	// Hash
+	else if (hashCommand->parsed())
+	{
+		vector<string> inputList = split(hashInput, ',');
+		
 	}
-
-	// 添加最后一个部分
-	result.push_back(str.substr(start));
-
-	return result;
+	return 0;
 }
