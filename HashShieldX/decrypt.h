@@ -20,5 +20,8 @@ public:
 
     // 字节数组转换为整数
     uint32_t bytesToInt(const std::vector<unsigned char>& bytes);
+
+    // Decrypt
+    void decrypt(string inputFile, string outputFile, string keyFile, bool isDebug);
 };
 

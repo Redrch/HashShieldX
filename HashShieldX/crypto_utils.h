@@ -13,6 +13,7 @@
 #include <memory>
 #include <stdexcept>
 
+using namespace std;
 // 自定义智能指针删除器，用于OpenSSL对象的安全释放
 struct OpenSSLDeleter {
     void operator()(EVP_CIPHER_CTX* ctx) { EVP_CIPHER_CTX_free(ctx); }
