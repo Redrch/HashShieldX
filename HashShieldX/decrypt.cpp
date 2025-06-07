@@ -90,3 +90,58 @@ uint32_t Decrypt::bytesToInt(const std::vector<unsigned char>& bytes) {
     }
     return result;
 }
+
+void Decrypt::decrypt(string inputFile, string outputFile, string keyFile, bool isDebug)
+{
+    // 读取加密的数据
+    std::vector<unsigned char> fileContent = readFile(inputFile);
+    // 从文件内容中提取IV、加密的AES密钥和加密数据
+    // 1. 读取IV长度(1字节)
+    if (fileContent.size() < 1) {
+        throw std::runtime_error("Invalid encrypted file format: file too short");
+    }
+    size_t pos = 0;
+    unsigned char ivLength = fileContent[pos++];
+
+    // 2. 读取IV
+    if (fileContent.size() < pos + ivLength) {
+        throw std::runtime_error("Invalid encrypted file format: IV data incomplete");
+    }
+    std::vector<unsigned char> storedIV(fileContent.begin() + pos, fileContent.begin() + pos + ivLength);
+    pos += ivLength;
+
+    // 3. 读取加密AES密钥长度(2字节)
+    if (fileContent.size() < pos + 2) {
+        throw std::runtime_error("Invalid encrypted file format: key length data missing");
+    }
+    std::vector<unsigned char> keySizeBytes(fileContent.begin() + pos, fileContent.begin() + pos + 2);
+    uint32_t keySize = this->bytesToInt(keySizeBytes);
+    pos += 2;
+
+    // 4. 读取加密的AES密钥
+    if (fileContent.size() < pos + keySize) {
+        throw std::runtime_error("Invalid encrypted file format: encrypted key data incomplete");
+    }
+    std::vector<unsigned char> encryptedKey(fileContent.begin() + pos, fileContent.begin() + pos + keySize);
+    pos += keySize;
+
+    // 5. 读取加密的文件内容
+    std::vector<unsigned char> encryptedData(fileContent.begin() + pos, fileContent.end());
+
+    if (isDebug) {
+        std::cout << "IV Length: " << (int)ivLength << std::endl;
+        std::cout << "IV Size: " << storedIV.size() << " bytes" << std::endl;
+        std::cout << "Encrypted Key Size: " << keySize << " bytes" << std::endl;
+        std::cout << "Encrypted Data Size: " << encryptedData.size() << " bytes" << std::endl;
+    }
+
+    // 使用RSA私钥解密AES密钥
+    auto privateKey = loadPrivateKey(keyFile);
+    std::vector<unsigned char> decryptedKey = this->decryptRSA(privateKey.get(), encryptedKey);
+
+    // 使用解密后的AES密钥解密文件内容
+    std::vector<unsigned char> decryptedContent = this->decryptAES(encryptedData, decryptedKey, storedIV);
+
+    // 保存解密后的内容到文件
+    writeFile(outputFile, decryptedContent);
+}

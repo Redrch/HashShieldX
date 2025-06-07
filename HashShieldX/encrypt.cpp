@@ -88,3 +88,52 @@ std::vector<unsigned char> Encrypt::intToBytes(uint32_t value, int bytes) {
 	}
 	return result;
 }
+
+void Encrypt::encrypt(string inputFile, string outputFile, string keyFile)
+{
+	// 读取文件
+	vector<unsigned char> content = readFile(inputFile);
+	// 加载RSA公钥
+	auto public_key = loadPublicKey(keyFile);
+
+	// 生成随机AES密钥(256bits=32Bytes)
+	std::vector<unsigned char> aesKey(32);
+	if (RAND_bytes(aesKey.data(), aesKey.size()) != 1) {
+		handleOpenSSLErrors();
+	}
+
+	// 生成随机IV (AES块大小 = 16Bytes)
+	std::vector<unsigned char> iv(AES_BLOCK_SIZE);
+	if (RAND_bytes(iv.data(), iv.size()) != 1) {
+		handleOpenSSLErrors();
+	}
+
+	// 使用RSA公钥加密AES密钥
+	std::vector<unsigned char> encrypted_key = this->encryptRSA(public_key.get(), aesKey);
+
+	// 使用AES-256-CBC加密文件内容
+	std::vector<unsigned char> ciphertext = this->encryptAES(content, aesKey, iv);
+
+	// 构建输出文件
+	// 文件格式: [IV长度(1字节)][IV][加密AES密钥长度(2字节)][加密AES密钥][加密内容]
+	std::vector<unsigned char> output;
+
+	// 添加IV长度 (1字节)
+	output.push_back(static_cast<unsigned char>(iv.size()));
+
+	// 添加IV
+	output.insert(output.end(), iv.begin(), iv.end());
+
+	// 添加加密后AES密钥长度 (2字节)
+	auto key_size_bytes = this->intToBytes(encrypted_key.size(), 2);
+	output.insert(output.end(), key_size_bytes.begin(), key_size_bytes.end());
+
+	// 添加加密后的AES密钥
+	output.insert(output.end(), encrypted_key.begin(), encrypted_key.end());
+
+	// 添加加密后的文件内容
+	output.insert(output.end(), ciphertext.begin(), ciphertext.end());
+
+	// 写入输出文件
+	writeFile(outputFile, output);
+}

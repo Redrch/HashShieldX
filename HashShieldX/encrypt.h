@@ -18,6 +18,8 @@ public:
         const std::vector<unsigned char>& iv
     );
 
+    void encrypt(string inputFile, string outputFile, string keyFile);
+
     // 将整数转换为字节向量
     std::vector<unsigned char> intToBytes(uint32_t value, int bytes);
 };
