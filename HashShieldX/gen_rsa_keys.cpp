@@ -16,8 +16,8 @@ GenRSAKeys::~GenRSAKeys()
     ERR_free_strings();
 }
 
-bool GenRSAKeys::generateRSAKeyPair(const std::string& publicKeyFile,
-    const std::string& privateKeyFile,
+bool GenRSAKeys::generateRSAKeyPair(const string& publicKeyFile,
+    const string& privateKeyFile,
     int keyBits)
 {
     // 验证输入参数
@@ -31,7 +31,7 @@ bool GenRSAKeys::generateRSAKeyPair(const std::string& publicKeyFile,
 
     try {
         // 创建RSA密钥生成上下文
-        std::unique_ptr<EVP_PKEY_CTX, OpenSSLDeleter> ctx(EVP_PKEY_CTX_new_id(EVP_PKEY_RSA, nullptr));
+        unique_ptr<EVP_PKEY_CTX, OpenSSLDeleter> ctx(EVP_PKEY_CTX_new_id(EVP_PKEY_RSA, nullptr));
         if (!ctx) {
             handleOpenSSLErrors();
         }
@@ -53,7 +53,7 @@ bool GenRSAKeys::generateRSAKeyPair(const std::string& publicKeyFile,
         }
 
         // 使用智能指针管理生成的密钥
-        std::unique_ptr<EVP_PKEY, OpenSSLDeleter> keyPair(pkey);
+        unique_ptr<EVP_PKEY, OpenSSLDeleter> keyPair(pkey);
 
         // 保存公钥到文件
         if (!writePublicKey(keyPair.get(), publicKeyFile)) {
@@ -65,33 +65,33 @@ bool GenRSAKeys::generateRSAKeyPair(const std::string& publicKeyFile,
             return false;
         }
 
-        std::cout << "RSA密钥对生成成功！" << std::endl;
-        std::cout << "公钥已保存到: " << publicKeyFile << std::endl;
-        std::cout << "私钥已保存到: " << privateKeyFile << std::endl;
+        cout << "RSA密钥对生成成功！" << endl;
+        cout << "公钥已保存到: " << publicKeyFile << endl;
+        cout << "私钥已保存到: " << privateKeyFile << endl;
 
         return true;
     }
-    catch (const std::exception& e) {
+    catch (const exception& e) {
         lastError = e.what();
         return false;
     }
 }
 
-void GenRSAKeys::setPrivateKeyPassword(const std::string& password)
+void GenRSAKeys::setPrivateKeyPassword(const string& password)
 {
     privateKeyPassword = password;
     usePasswordProtection = !password.empty();
 }
 
-std::string GenRSAKeys::getLastError() const
+string GenRSAKeys::getLastError() const
 {
     return lastError;
 }
 
-bool GenRSAKeys::writePrivateKey(EVP_PKEY* pkey, const std::string& filename)
+bool GenRSAKeys::writePrivateKey(EVP_PKEY* pkey, const string& filename)
 {
     // 创建文件BIO
-    std::unique_ptr<BIO, OpenSSLDeleter> bio(BIO_new_file(filename.c_str(), "w"));
+    unique_ptr<BIO, OpenSSLDeleter> bio(BIO_new_file(filename.c_str(), "w"));
     if (!bio) {
         lastError = "无法创建私钥文件";
         return false;
@@ -132,10 +132,10 @@ bool GenRSAKeys::writePrivateKey(EVP_PKEY* pkey, const std::string& filename)
     return true;
 }
 
-bool GenRSAKeys::writePublicKey(EVP_PKEY* pkey, const std::string& filename)
+bool GenRSAKeys::writePublicKey(EVP_PKEY* pkey, const string& filename)
 {
     // 创建文件BIO
-    std::unique_ptr<BIO, OpenSSLDeleter> bio(BIO_new_file(filename.c_str(), "w"));
+    unique_ptr<BIO, OpenSSLDeleter> bio(BIO_new_file(filename.c_str(), "w"));
     if (!bio) {
         lastError = "无法创建公钥文件";
         return false;

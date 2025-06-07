@@ -25,12 +25,12 @@ struct OpenSSLDeleter {
 // 错误处理辅助函数
 inline void handleOpenSSLErrors() {
     ERR_print_errors_fp(stderr);
-    throw std::runtime_error("OpenSSL error occurred");
+    throw runtime_error("OpenSSL error occurred");
 }
 
 // 从文件加载RSA公钥
-inline std::unique_ptr<EVP_PKEY, OpenSSLDeleter> loadPublicKey(const std::string& filename) {
-    auto bio = std::unique_ptr<BIO, OpenSSLDeleter>(BIO_new_file(filename.c_str(), "r"));
+inline unique_ptr<EVP_PKEY, OpenSSLDeleter> loadPublicKey(const string& filename) {
+    auto bio = unique_ptr<BIO, OpenSSLDeleter>(BIO_new_file(filename.c_str(), "r"));
     if (!bio) {
         handleOpenSSLErrors();
     }
@@ -40,12 +40,12 @@ inline std::unique_ptr<EVP_PKEY, OpenSSLDeleter> loadPublicKey(const std::string
         handleOpenSSLErrors();
     }
 
-    return std::unique_ptr<EVP_PKEY, OpenSSLDeleter>(pkey_raw);
+    return unique_ptr<EVP_PKEY, OpenSSLDeleter>(pkey_raw);
 }
 
 // 从文件加载RSA私钥
-inline std::unique_ptr<EVP_PKEY, OpenSSLDeleter> loadPrivateKey(const std::string& filename) {
-    auto bio = std::unique_ptr<BIO, OpenSSLDeleter>(BIO_new_file(filename.c_str(), "r"));
+inline unique_ptr<EVP_PKEY, OpenSSLDeleter> loadPrivateKey(const string& filename) {
+    auto bio = unique_ptr<BIO, OpenSSLDeleter>(BIO_new_file(filename.c_str(), "r"));
     if (!bio) {
         handleOpenSSLErrors();
     }
@@ -55,31 +55,31 @@ inline std::unique_ptr<EVP_PKEY, OpenSSLDeleter> loadPrivateKey(const std::strin
         handleOpenSSLErrors();
     }
 
-    return std::unique_ptr<EVP_PKEY, OpenSSLDeleter>(pkey_raw);
+    return unique_ptr<EVP_PKEY, OpenSSLDeleter>(pkey_raw);
 }
 
 // 读取整个文件内容
-inline std::vector<unsigned char> readFile(const std::string& filename) {
-    std::ifstream file(filename, std::ios::binary);
+inline vector<unsigned char> readFile(const string& filename) {
+    ifstream file(filename, ios::binary);
     if (!file) {
-        throw std::runtime_error("Cannot open file for reading: " + filename);
+        throw runtime_error("Cannot open file for reading: " + filename);
     }
 
-    file.seekg(0, std::ios::end);
+    file.seekg(0, ios::end);
     size_t size = file.tellg();
-    file.seekg(0, std::ios::beg);
+    file.seekg(0, ios::beg);
 
-    std::vector<unsigned char> buffer(size);
+    vector<unsigned char> buffer(size);
     file.read(reinterpret_cast<char*>(buffer.data()), size);
 
     return buffer;
 }
 
 // 写入文件内容
-inline void writeFile(const std::string& filename, const std::vector<unsigned char>& data) {
-    std::ofstream file(filename, std::ios::binary);
+inline void writeFile(const string& filename, const vector<unsigned char>& data) {
+    ofstream file(filename, ios::binary);
     if (!file) {
-        throw std::runtime_error("Cannot open file for writing: " + filename);
+        throw runtime_error("Cannot open file for writing: " + filename);
     }
 
     file.write(reinterpret_cast<const char*>(data.data()), data.size());

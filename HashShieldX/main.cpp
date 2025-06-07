@@ -1,5 +1,7 @@
 #include <iostream>
 #include <string>
+#include <vector>
+#include <algorithm>
 #include "CLI11.hpp"
 
 #include "encrypt.h"
@@ -61,6 +63,14 @@ int main(int argc, char* argv[])
 	int keyLength = 2048;
 	genKeyCommand->add_option("-l, --key-length", keyLength, "密钥长度");
 
+	// Hash Command
+	auto* hashCommand = app.add_subcommand("hash", "对多个文件进行Hash");
+	// Required
+	string hashInput;
+	hashCommand->add_option("-i, --input", hashInput, "输入文件");
+
+	vector<string> inputList;
+
 	// 只需要一个子命令
 	app.require_subcommand(1);
 
@@ -98,9 +108,9 @@ int main(int argc, char* argv[])
 		{
 			encrypt->encrypt(encryptInputFile, encryptOutputFile, encryptKeyFile);
 
-			std::cout << "文件加密成功： " << encryptOutputFile << std::endl;
+			cout << "文件加密成功： " << encryptOutputFile << endl;
 		}
-		catch (const std::exception& e)
+		catch (const exception& e)
 		{
 			cerr << "Error: " << e.what() << endl;
 			return 1;
@@ -128,9 +138,9 @@ int main(int argc, char* argv[])
 		{
 			decrypt->decrypt(decryptInputFile, decryptOutputFile, decryptKeyFile, isDebug);
 
-			std::cout << "文件解密成功： " << decryptInputFile << std::endl;
+			cout << "文件解密成功： " << decryptInputFile << endl;
 		}
-		catch (const std::exception& e)
+		catch (const exception& e)
 		{
 			cerr << "Error: " << e.what() << endl;
 		}
@@ -143,4 +153,21 @@ int main(int argc, char* argv[])
 	}
 
 	return 0;
+}
+
+vector<string> split(const string& str, char delimiter) {
+	vector<string> result;
+	size_t start = 0;
+	size_t end = str.find(delimiter);
+
+	while (end != string::npos) {
+		result.push_back(str.substr(start, end - start));
+		start = end + 1;
+		end = str.find(delimiter, start);
+	}
+
+	// 添加最后一个部分
+	result.push_back(str.substr(start));
+
+	return result;
 }

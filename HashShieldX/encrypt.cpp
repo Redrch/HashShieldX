@@ -11,9 +11,9 @@ Encrypt::~Encrypt()
 }
 
 // 使用RSA加密AES密钥
-std::vector<unsigned char> Encrypt::encryptRSA(EVP_PKEY* pubkey, const std::vector<unsigned char>& data) {
+vector<unsigned char> Encrypt::encryptRSA(EVP_PKEY* pubkey, const vector<unsigned char>& data) {
 	// 创建加密上下文
-	std::unique_ptr<EVP_PKEY_CTX, OpenSSLDeleter> ctx(EVP_PKEY_CTX_new(pubkey, nullptr));
+	unique_ptr<EVP_PKEY_CTX, OpenSSLDeleter> ctx(EVP_PKEY_CTX_new(pubkey, nullptr));
 	if (!ctx) {
 		handleOpenSSLErrors();
 	}
@@ -35,7 +35,7 @@ std::vector<unsigned char> Encrypt::encryptRSA(EVP_PKEY* pubkey, const std::vect
 	}
 
 	// 执行加密
-	std::vector<unsigned char> encrypted(outlen);
+	vector<unsigned char> encrypted(outlen);
 	if (EVP_PKEY_encrypt(ctx.get(), encrypted.data(), &outlen, data.data(), data.size()) <= 0) {
 		handleOpenSSLErrors();
 	}
@@ -45,13 +45,13 @@ std::vector<unsigned char> Encrypt::encryptRSA(EVP_PKEY* pubkey, const std::vect
 }
 
 // 使用AES-256-CBC加密文件内容
-std::vector<unsigned char> Encrypt::encryptAES(
-	const std::vector<unsigned char>& plaintext,
-	const std::vector<unsigned char>& key,
-	const std::vector<unsigned char>& iv
+vector<unsigned char> Encrypt::encryptAES(
+	const vector<unsigned char>& plaintext,
+	const vector<unsigned char>& key,
+	const vector<unsigned char>& iv
 ) {
 	// 创建并初始化加密上下文
-	std::unique_ptr<EVP_CIPHER_CTX, OpenSSLDeleter> ctx(EVP_CIPHER_CTX_new());
+	unique_ptr<EVP_CIPHER_CTX, OpenSSLDeleter> ctx(EVP_CIPHER_CTX_new());
 	if (!ctx) {
 		handleOpenSSLErrors();
 	}
@@ -62,7 +62,7 @@ std::vector<unsigned char> Encrypt::encryptAES(
 	}
 
 	// 分配加密结果的缓冲区（最大可能大小）
-	std::vector<unsigned char> ciphertext(plaintext.size() + AES_BLOCK_SIZE);
+	vector<unsigned char> ciphertext(plaintext.size() + AES_BLOCK_SIZE);
 	int len1 = 0, len2 = 0;
 
 	// 加密数据
@@ -81,8 +81,8 @@ std::vector<unsigned char> Encrypt::encryptAES(
 }
 
 // 将整数转换为字节向量
-std::vector<unsigned char> Encrypt::intToBytes(uint32_t value, int bytes) {
-	std::vector<unsigned char> result(bytes);
+vector<unsigned char> Encrypt::intToBytes(uint32_t value, int bytes) {
+	vector<unsigned char> result(bytes);
 	for (int i = 0; i < bytes; i++) {
 		result[bytes - i - 1] = (value >> (i * 8)) & 0xFF;
 	}
@@ -97,26 +97,26 @@ void Encrypt::encrypt(string inputFile, string outputFile, string keyFile)
 	auto public_key = loadPublicKey(keyFile);
 
 	// 生成随机AES密钥(256bits=32Bytes)
-	std::vector<unsigned char> aesKey(32);
+	vector<unsigned char> aesKey(32);
 	if (RAND_bytes(aesKey.data(), aesKey.size()) != 1) {
 		handleOpenSSLErrors();
 	}
 
 	// 生成随机IV (AES块大小 = 16Bytes)
-	std::vector<unsigned char> iv(AES_BLOCK_SIZE);
+	vector<unsigned char> iv(AES_BLOCK_SIZE);
 	if (RAND_bytes(iv.data(), iv.size()) != 1) {
 		handleOpenSSLErrors();
 	}
 
 	// 使用RSA公钥加密AES密钥
-	std::vector<unsigned char> encrypted_key = this->encryptRSA(public_key.get(), aesKey);
+	vector<unsigned char> encrypted_key = this->encryptRSA(public_key.get(), aesKey);
 
 	// 使用AES-256-CBC加密文件内容
-	std::vector<unsigned char> ciphertext = this->encryptAES(content, aesKey, iv);
+	vector<unsigned char> ciphertext = this->encryptAES(content, aesKey, iv);
 
 	// 构建输出文件
 	// 文件格式: [IV长度(1字节)][IV][加密AES密钥长度(2字节)][加密AES密钥][加密内容]
-	std::vector<unsigned char> output;
+	vector<unsigned char> output;
 
 	// 添加IV长度 (1字节)
 	output.push_back(static_cast<unsigned char>(iv.size()));
