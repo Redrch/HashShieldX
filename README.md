@@ -1,6 +1,6 @@
 # HashShieldX
 
-HashShieldX是一个可以帮你加解密文件（夹)和计算文件（夹）Hash的一个小工具
+HashShieldX是一个可以帮你加解密文件和计算2个文件Hash的一个小工具
 
 ## 构建项目
 
@@ -21,11 +21,11 @@ HashShieldX是一个可以帮你加解密文件（夹)和计算文件（夹）Ha
 
 **命令格式：** `HashShieldX subcommand args`
 
-**参数说明**
+#### **参数说明**
 
 `-d, --debug` 打开调试模式
 
-**子命令**
+##### encrypt 命令
 
 `encrypt` 加密文件
 
@@ -45,6 +45,8 @@ HashShieldX是一个可以帮你加解密文件（夹)和计算文件（夹）Ha
 
 
 
+##### decrypt 命令
+
 `decrypt` 解密文件
 
 **参数**
@@ -58,6 +60,8 @@ HashShieldX是一个可以帮你加解密文件（夹)和计算文件（夹）Ha
 `-k, --key` 密钥文件
 
 
+
+##### genkey 命令
 
 `genkey` 生成密钥
 
@@ -73,9 +77,19 @@ HashShieldX是一个可以帮你加解密文件（夹)和计算文件（夹）Ha
 
 `-l, --key-length` 密钥长度（默认：2048）
 
-**还有Hash的部分，还没做**
+
+
+##### hash 命令
+
+`hash` 计算文件hash
+
+**必填**
+
+`-i, --input` 需要计算Hash的两个文件的路径，以","分割，如：-i a.txt,b.txt
+
+
 
 ### 右键菜单
 
-没做完，先不写
+预计0.0.1-b做吧
 
