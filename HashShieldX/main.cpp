@@ -30,7 +30,7 @@ vector<string> split(const string& str, char delimiter) {
 
 int main(int argc, char* argv[])
 {
-	CLI::App app{ "这是一个小工具，可以帮你加解密文件（夹）和计算多个文件（夹）的Hash值" };
+	CLI::App app{ "这是一个小工具，可以帮你加解密文件和计算2个文件的Hash值" };
 
 	app.set_version_flag("--version", VERSION, "显示版本号");
 
@@ -170,7 +170,9 @@ int main(int argc, char* argv[])
 	// Hash
 	else if (hashCommand->parsed())
 	{
+		// Calc Hash
 		vector<string> inputList = split(hashInput, ',');
+		map<string, string> hashMap;  // map < filename, hash > 
 		vector<string> hashList = vector<string>();
 		int len = inputList.size();
 		for (int i = 0; i < len; i++)
@@ -179,7 +181,34 @@ int main(int argc, char* argv[])
 			GetHash* getHash = new GetHash;
 			string hash = getHash->calculateFileHash(fileName, GetHash::HashType::SHA1);
 			hashList.push_back(hash);
-			cout << "File: " << fileName << "  hash: " << hash << endl;
+			hashMap.insert(pair<string, string>(fileName, hash));
+			if (isDebug)
+			{
+				cout << "File: " << fileName << "  hash: " << hash << endl;
+			}
+		}
+		//// Find Same Hash
+		//vector<vector<string>> sameHash;
+		//for (int i = 0; i < len - 1; i++)
+		//{
+		//	if (hashList[i] == hashList[i + 1])
+		//	{
+		//		vector<string> subList = vector<string>();
+		//		subList.push_back(hashMap[hashList[i]]);
+		//		subList.push_back(hashMap[hashList[i + 1]]);
+		//		cout << subList[0] << subList[1] << endl;
+		//		sameHash.push_back(subList);
+		//	}
+		//}
+
+		//// Output Same Hash
+		//for (vector<string> sameHashFiles : sameHash)
+		//{
+		//	cout << "文件内容相同的文件：" << sameHashFiles[0] << "\t" << sameHashFiles[1] << endl;
+		//}
+		if (hashList[0] == hashList[1])
+		{
+			cout << "两个文件的hash一样" << endl;
 		}
 	}
 	return 0;
