@@ -131,6 +131,7 @@ int main(int argc, char* argv[])
 			cerr << "Error: " << e.what() << endl;
 			return 1;
 		}
+		delete encrypt;
 	}
 	// Decrypt
 	else if (decryptCommand->parsed())
@@ -160,12 +161,14 @@ int main(int argc, char* argv[])
 		{
 			cerr << "Error: " << e.what() << endl;
 		}
+		delete decrypt;
 	}
 	// Gen Key
 	else if (genKeyCommand->parsed())
 	{
 		GenRSAKeys* genRsaKeys = new GenRSAKeys;
 		genRsaKeys->generateRSAKeyPair(publicKeyFile, privateKeyFile, keyLength);
+		delete genRsaKeys;
 	}
 	// Hash
 	else if (hashCommand->parsed())
@@ -175,10 +178,10 @@ int main(int argc, char* argv[])
 		map<string, string> hashMap;  // map < filename, hash > 
 		vector<string> hashList = vector<string>();
 		int len = inputList.size();
+		GetHash* getHash = new GetHash;
 		for (int i = 0; i < len; i++)
 		{
 			string fileName = inputList[i];
-			GetHash* getHash = new GetHash;
 			string hash = getHash->calculateFileHash(fileName, GetHash::HashType::SHA1);
 			hashList.push_back(hash);
 			hashMap.insert(pair<string, string>(fileName, hash));
@@ -210,6 +213,7 @@ int main(int argc, char* argv[])
 		{
 			cout << "两个文件的hash一样" << endl;
 		}
+		delete getHash;
 	}
 	return 0;
 }
