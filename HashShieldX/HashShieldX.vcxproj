@@ -168,6 +168,7 @@
     <ClCompile Include="gen_rsa_keys.cpp" />
     <ClCompile Include="get_hash.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="split_file.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="crypto_utils.h" />
@@ -175,6 +176,7 @@
     <ClInclude Include="encrypt.h" />
     <ClInclude Include="gen_rsa_keys.h" />
     <ClInclude Include="get_hash.h" />
+    <ClInclude Include="split_file.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

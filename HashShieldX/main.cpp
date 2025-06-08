@@ -9,6 +9,8 @@
 #include "gen_rsa_keys.h"
 #include "get_hash.h"
 
+#include "split_file.h"
+
 using namespace std;
 
 vector<string> split(const string& str, char delimiter) {
@@ -215,5 +217,6 @@ int main(int argc, char* argv[])
 		}
 		delete getHash;
 	}
+
 	return 0;
 }
