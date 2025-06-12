@@ -89,7 +89,7 @@ vector<unsigned char> Encrypt::intToBytes(uint32_t value, int bytes) {
 	return result;
 }
 
-void Encrypt::encrypt(string inputFile, string outputFile, string keyFile)
+void Encrypt::encryptSmallFile(string inputFile, string outputFile, string keyFile)
 {
 	// 读取文件
 	vector<unsigned char> content = readFile(inputFile);
@@ -136,4 +136,31 @@ void Encrypt::encrypt(string inputFile, string outputFile, string keyFile)
 
 	// 写入输出文件
 	writeFile(outputFile, output);
+}
+
+void Encrypt::encrypt(string inputFile, string outputFile, string keyFile, bool isDebug)
+{
+	vector<unsigned char> content = readFile(inputFile);
+	size_t size = content.size();
+	if (size <= 256 * 1024 * 1024)  // size <= 256MiB
+	{
+		this->encryptSmallFile(inputFile, outputFile, keyFile);
+	}
+	else
+	{
+		filesystem::create_directory("C:/tmp");
+		filesystem::create_directory("C:/tmp/e");
+		SplitFile splitFile;
+		splitFile.splitFile(inputFile, "C:/tmp", 256 * 1024 * 1024, isDebug);
+		// 遍历目录
+		for (auto& entry : filesystem::directory_iterator("C:/tmp"))
+		{
+			if (!entry.is_regular_file())
+			{
+				continue;
+			}
+			string path = entry.path().string();
+			this->encryptSmallFile(path, "C:/tmp/e/" + entry.path().filename().string(), keyFile);
+		}
+	}
 }

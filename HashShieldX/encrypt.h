@@ -1,6 +1,8 @@
 #pragma once
 
+#include <zlib/zlib.h>
 #include "crypto_utils.h"
+#include "split_file.h"
 
 class Encrypt
 {
@@ -18,7 +20,8 @@ public:
         const vector<unsigned char>& iv
     );
 
-    void encrypt(string inputFile, string outputFile, string keyFile);
+    void encryptSmallFile(string inputFile, string outputFile, string keyFile);
+    void encrypt(string inputFile, string outputFile, string keyFile, bool isDebug);
 
     // 将整数转换为字节向量
     vector<unsigned char> intToBytes(uint32_t value, int bytes);

@@ -124,7 +124,7 @@ int main(int argc, char* argv[])
 		Encrypt* encrypt = new Encrypt;
 		try
 		{
-			encrypt->encrypt(encryptInputFile, encryptOutputFile, encryptKeyFile);
+			encrypt->encrypt(encryptInputFile, encryptOutputFile, encryptKeyFile, isDebug);
 
 			cout << "文件加密成功： " << encryptOutputFile << endl;
 		}
