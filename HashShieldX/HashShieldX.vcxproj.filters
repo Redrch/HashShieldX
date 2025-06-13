@@ -30,6 +30,18 @@
     <ClCompile Include="decrypt.cpp">
       <Filter>源文件\Crypto</Filter>
     </ClCompile>
+    <ClCompile Include="gen_rsa_keys.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="get_hash.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="split_file.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="include\openssl\applink.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="encrypt.h">
@@ -40,6 +52,15 @@
     </ClInclude>
     <ClInclude Include="crypto_utils.h">
       <Filter>头文件\Crypto</Filter>
+    </ClInclude>
+    <ClInclude Include="gen_rsa_keys.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="get_hash.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="split_file.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -2,6 +2,8 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <openssl/applink.c>
+
 #include "CLI11.hpp"
 
 #include "encrypt.h"

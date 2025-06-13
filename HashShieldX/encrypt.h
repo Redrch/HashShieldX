@@ -1,8 +1,8 @@
 #pragma once
 
-#include <zlib/zlib.h>
 #include "crypto_utils.h"
 #include "split_file.h"
+#include <zip.h>
 
 class Encrypt
 {

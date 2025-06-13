@@ -162,5 +162,43 @@ void Encrypt::encrypt(string inputFile, string outputFile, string keyFile, bool 
 			string path = entry.path().string();
 			this->encryptSmallFile(path, "C:/tmp/e/" + entry.path().filename().string(), keyFile);
 		}
+		// 压缩文件
+		struct zip* archive = zip_open(outputFile.c_str(), ZIP_CREATE | ZIP_TRUNCATE, NULL);
+		if (!archive)
+		{
+			cerr << "无法创建输出文件！" << endl;
+			return;
+		}
+		// 遍历目录
+		for (auto& entry : filesystem::directory_iterator("C:/tmp"))
+		{
+			string path = entry.path().string();
+			// Create source
+			zip_source_t* source = zip_source_file(archive, path.c_str(), 0, -1);
+			if (!source)
+			{
+				cerr << "无法创建源" << endl;
+				zip_close(archive);
+				return;
+			}
+			// Add to file
+			zip_int64_t index = zip_file_add(archive, path.c_str(), source, ZIP_FL_OVERWRITE);
+			if (index < 0)
+			{
+				cerr << "无法将文件进行组合" << endl;
+				zip_source_free(source);
+				zip_close(archive);
+				return;
+			}
+			// Set file compression
+			if (zip_set_file_compression(archive, index, ZIP_CM_DEFLATE, 9))
+			{
+				cerr << "无法设置压缩级别" << endl;
+			}
+		}
+		// Close file
+		zip_close(archive);
+		// Clear temp file
+		filesystem::remove_all("C:/tmp");
 	}
 }
