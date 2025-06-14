@@ -164,13 +164,14 @@ void Encrypt::encrypt(string inputFile, string outputFile, string keyFile, bool 
 		}
 		// 压缩文件
 		struct zip* archive = zip_open(outputFile.c_str(), ZIP_CREATE | ZIP_TRUNCATE, NULL);
+		if (isDebug) cout << "zip output file: " << outputFile.c_str() << endl;
 		if (!archive)
 		{
 			cerr << "无法创建输出文件！" << endl;
 			return;
 		}
 		// 遍历目录
-		for (auto& entry : filesystem::directory_iterator("C:/tmp"))
+		for (auto& entry : filesystem::directory_iterator("C:/tmp/e"))
 		{
 			string path = entry.path().string();
 			// Create source
@@ -195,6 +196,7 @@ void Encrypt::encrypt(string inputFile, string outputFile, string keyFile, bool 
 			{
 				cerr << "无法设置压缩级别" << endl;
 			}
+			if (isDebug) cout << "Added file: " << entry.path().filename().string() << endl;
 		}
 		// Close file
 		zip_close(archive);
